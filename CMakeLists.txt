@@ -4,6 +4,9 @@ project(hlsl2glslfork)
 
 set(CMAKE_SUPPRESS_REGENERATION TRUE)
 
+option(BUILD_TESTS "Build test programs" OFF)
+option(BUILD_STANDALONE "Build standalone programs" OFF)
+
 set(HEADER_FILES
   hlslang/Include/BaseTypes.h
   hlslang/Include/Common.h
@@ -213,6 +216,11 @@ add_library(hlsl2glsl
 include_directories(
     ${INCLUDE_FILES} 
 )
-add_executable(hlsl2glsltest tests/hlsl2glsltest/hlsl2glsltest.cpp)
 
-target_link_libraries(hlsl2glsltest hlsl2glsl ${TEST_LIBS})
+if (BUILD_TESTS)
+
+	add_executable(hlsl2glsltest tests/hlsl2glsltest/hlsl2glsltest.cpp)
+
+	target_link_libraries(hlsl2glsltest hlsl2glsl ${TEST_LIBS})
+
+endif(BUILD_TESTS)
