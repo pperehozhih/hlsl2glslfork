@@ -147,7 +147,8 @@ elseif (APPLE)
     source_group("OSDependent\\Mac" FILES ${OSDEPENDENT_FILES})
     include_directories(${CMAKE_CURRENT_SOURCE_DIR}/hlslang/OSDependent/Mac)    
 
-    add_custom_command(OUTPUT hlslang/MachineIndependent/Gen_hlslang_tab.cpp hlslang/MachineIndependent/hlslang_tab.h 
+    add_custom_command(	 PRE_BUILD
+						 OUTPUT hlslang/MachineIndependent/Gen_hlslang_tab.cpp hlslang/MachineIndependent/hlslang_tab.h 
                          COMMAND set ARGS "BISON_SIMPLE=../../tools/bison.simple"
                          COMMAND set ARGS "BISON_HAIRY=../../tools/bison.simple"
                          COMMAND bison ARGS -o hlslang_tab.cpp -d -t -v hlslang.y
@@ -157,7 +158,9 @@ elseif (APPLE)
                          COMMENT "Executing Bison on hlslang.y"
                       )
                    
-    add_custom_command(OUTPUT hlslang/MachineIndependent/Gen_hlslang.cpp
+    add_custom_command(
+						 PRE_BUILD
+						 OUTPUT hlslang/MachineIndependent/Gen_hlslang.cpp
                          COMMAND flex ARGS hlslang.l
                          MAIN_DEPENDENCY hlslang/MachineIndependent/hlslang.l
                          DEPENDS hlslang/MachineIndependent/hlslang_tab.h
