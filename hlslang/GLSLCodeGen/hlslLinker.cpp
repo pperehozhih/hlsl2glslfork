@@ -192,7 +192,7 @@ static const char* varInString[EAttrSemCount] = {
 // String table that maps attribute semantics to built-in GLSL fragment shader outputs
 static const char* resultString[EAttrSemCount] = {
 	"",
-	"",
+	"gl_Position",
 	"",
 	"",
 	"",
@@ -520,6 +520,9 @@ bool HlslLinker::getArgumentData2( GlslSymbolOrStructMemberBase const* symOrStru
 
 		case EClassRes:
 			outName = resultString[sem];
+         if (m_Options & ETranslateOpUseGlFragColor && sem == EAttrSemColor0) {
+            outName = "gl_FragColor";
+         }
 			if (sem == EAttrSemDepth)
 			{
 				if (m_Target == ETargetGLSL_ES_100)

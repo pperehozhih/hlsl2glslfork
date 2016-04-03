@@ -208,6 +208,9 @@ enum TTranslateOptions
 	//  instead of outputting e.g. "xlat_attrib_TEXCOORD0" for "appdata_t.texcoord : TEXCOORD0"
 	//  we will output "appdata_t_texcoord"
 	ETranslateOpPropogateOriginalAttribNames = (1<<4),
+
+   // Generate shader with gl_FragColor instead of gl_FragData[0]
+   ETranslateOpUseGlFragColor = (1<<5),
 };
 
 
