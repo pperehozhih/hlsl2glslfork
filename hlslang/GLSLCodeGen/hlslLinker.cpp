@@ -1087,7 +1087,6 @@ void HlslLinker::emitInputNonStructParam(GlslSymbol* sym, EShLanguage lang, bool
 	if (!getArgumentData (sym, lang==EShLangVertex ? EClassAttrib : EClassVarIn, name, ctor, pad))
 	{
 		// should deal with fall through cases here
-		assert(0);
 		infoSink.info << "Unsupported type for shader entry parameter (";
 		infoSink.info << getTypeString(sym->getType()) << ")\n";
 		return;
