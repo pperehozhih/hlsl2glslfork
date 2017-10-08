@@ -89,9 +89,9 @@ set(MACHINE_INDEPENDENT_CPP_FILES
 source_group("Machine Independent\\CPP" FILES ${MACHINE_INDEPENDENT_CPP_FILES})
 
 
-if (WIN32)
-  EXEC_PROGRAM(${CMAKE_COMMAND} ARGS "-E write_regv \"${hkey}\" \"${dir}\"")
-endif ()
+#if (WIN32)
+#  EXEC_PROGRAM(${CMAKE_COMMAND} ARGS "-E write_regv \"${hkey}\" \"${dir}\"")
+#endif ()
 
 
 set(MACHINE_INDEPENDENT_GENERATED_SOURCE_FILES
@@ -110,7 +110,6 @@ source_group("Machine Independent\\Generated Source" FILES ${MACHINE_INDEPENDENT
 # Add system specific settings
 if (WIN32)
     set(OSDEPENDENT_FILES
-      hlslang/OSDependent/Windows/main.cpp
       hlslang/OSDependent/Windows/osinclude.h
       hlslang/OSDependent/Windows/ossource.cpp
     )
@@ -120,7 +119,7 @@ if (WIN32)
     add_custom_command(OUTPUT hlslang/MachineIndependent/Gen_hlslang_tab.cpp hlslang/MachineIndependent/hlslang_tab.h 
                          COMMAND set ARGS "BISON_SIMPLE=../../tools/bison.simple"
                          COMMAND set ARGS "BISON_HAIRY=../../tools/bison.simple"
-                         COMMAND ../../tools/bison.exe ARGS  -d -t -v hlslang.y
+                         COMMAND ../../tools/bin/bison.exe ARGS -o hlslang_tab.cpp -d -t -v hlslang.y
                          COMMAND copy ARGS /y hlslang_tab.c Gen_hlslang_tab.cpp
                          COMMAND del ARGS hlslang_tab.c
                          COMMAND del ARGS hlslang.output
