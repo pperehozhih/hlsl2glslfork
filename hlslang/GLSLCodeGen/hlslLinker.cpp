@@ -18,8 +18,9 @@ static const char* kTargetVersionStrings[ETargetVersionCount] = {
 	"", // ES 1.00
 	"", // 1.10
 	"#version 120\n", // 1.20
-    "#version 140\n", // 1.40
-	"", // ES 3.0 - #version 300 es is added later in shader build pipe
+   "#version 140\n", // 1.40
+   "#version 300", // ES 3.0 - #version 300 es is added later in shader build pipe
+   "#version 330",
 };
 
 
@@ -50,19 +51,19 @@ static const char* attribString[EAttrSemCount] = {
 	"gl_MultiTexCoord7",
 	"",
 	"",
-	"xlat_attrib_tangent",
 	"",
 	"",
 	"",
-	"xlat_attrib_binorm",
 	"",
 	"",
 	"",
-	"xlat_attrib_blendweights",
 	"",
 	"",
 	"",
-	"xlat_attrib_blendindices",
+	"",
+	"",
+	"",
+	"",
 	"",
 	"",
 	"",
@@ -462,7 +463,8 @@ bool HlslLinker::getArgumentData2( GlslSymbolOrStructMemberBase const* symOrStru
 
 		case EClassVarOut:
 			// Create varying name
-			if ( (sem != EAttrSemPosition && sem != EAttrSemPrimitiveID && sem != EAttrSemPSize) || varOutString[sem][0] == 0 )
+			if ( (sem != EAttrSemPosition && sem != EAttrSemPrimitiveID && sem != EAttrSemPSize ) || varOutString[sem][0] == 0 ||
+             (sem == EAttrSemColor0 && m_Target >= ETargetGLSL_330 && m_Options & ETranslateOpUseGlFragColor))
 			{
 				outName = kUserVaryingPrefix;
 				outName += semantic;
@@ -520,7 +522,7 @@ bool HlslLinker::getArgumentData2( GlslSymbolOrStructMemberBase const* symOrStru
 
 		case EClassRes:
 			outName = resultString[sem];
-         if (m_Options & ETranslateOpUseGlFragColor && sem == EAttrSemColor0) {
+         if (m_Options & ETranslateOpUseGlFragColor && sem == EAttrSemColor0 && m_Target < ETargetGLSL_ES_300) {
             outName = "gl_FragColor";
          }
 			if (sem == EAttrSemDepth)
@@ -1451,8 +1453,10 @@ bool HlslLinker::emitReturnValue(const EGlslSymbolType retType, GlslFunction* fu
 		int pad;
 		
 		GlslSymbolOrStructMemberBase fakedMainSym("", funcMain->getSemantic(), retType, EqtNone, EbpMedium, 0);
-
-		if (!getArgumentData2(&fakedMainSym, lang==EShLangVertex ? EClassVarOut : EClassRes,
+      EClassifier c = lang==EShLangVertex ? EClassVarOut : EClassRes;
+      if (m_Target > ETargetGLSL_ES_300)
+         c = EClassVarOut;
+		if (!getArgumentData2(&fakedMainSym, c,
 								name, ctor, pad, -1))
 		{
 			TSourceLoc loc = { 0, 1 };
@@ -1473,6 +1477,8 @@ bool HlslLinker::emitReturnValue(const EGlslSymbolType retType, GlslFunction* fu
 		// In vertex shader, add to varyings
 		if (lang == EShLangVertex)
 			AddToVaryings (varying, lang, m_Target, funcMain->getPrecision(), ctor, name);
+      if (lang == EShLangFragment && m_Target >= ETargetGLSL_330)
+         AddVertexOutput(varying, m_Target, funcMain->getPrecision(), ctor, name);
 		return true;
 	}
 	

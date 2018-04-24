@@ -160,7 +160,7 @@ enum ETargetVersion
 	ETargetGLSL_120,
 	ETargetGLSL_140,
 	ETargetGLSL_ES_300,
-	// ETargetGLSL_330,
+   ETargetGLSL_330,
 	ETargetVersionCount
 };
 
