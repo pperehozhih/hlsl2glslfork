@@ -205,9 +205,8 @@ void writeComparison( const TString &compareOp, const TString &compareCall, TInt
 }
 
 
-void writeFuncCall( const TString &name, TIntermAggregate *node, TGlslOutputTraverser* goit, bool bGenMatrix = false, bool mangleName = false )
+void writeFuncCall( const TString &name, TIntermAggregate *node, TGlslOutputTraverser* goit, bool bGenMatrix = false, bool mangleName = false, bool reverceArgs = false )
 {
-   TNodeArray::iterator sit;
    TNodeArray& nodes = node->getNodes(); 
    GlslFunction *current = goit->current;
    std::stringstream& out = current->getActiveOutput();
@@ -227,6 +226,7 @@ void writeFuncCall( const TString &name, TIntermAggregate *node, TGlslOutputTrav
 
 	if (mangleName || (bGenMatrix && node->isMatrix()))
 	{
+      TNodeArray::iterator sit;
 		for (sit = nodes.begin(); sit != nodes.end(); ++sit)
 		{
 			TString mangledType;
@@ -237,12 +237,23 @@ void writeFuncCall( const TString &name, TIntermAggregate *node, TGlslOutputTrav
    
    out << "( ";
 
-	for (sit = nodes.begin(); sit != nodes.end(); ++sit)
-	{
-		if (sit !=nodes.begin())
-			out << ", ";
-		(*sit)->traverse(goit);
-	}
+   if (reverceArgs == false) {
+      TNodeArray::iterator sit;
+      for (sit = nodes.begin(); sit != nodes.end(); ++sit)
+      {
+         if (sit !=nodes.begin())
+            out << ", ";
+         (*sit)->traverse(goit);
+      }
+   } else {
+      TNodeArray::reverse_iterator sit;
+      for (sit = nodes.rbegin(); sit != nodes.rend(); ++sit)
+      {
+         if (sit !=nodes.rbegin())
+            out << ", ";
+         (*sit)->traverse(goit);
+      }
+   }
 	
    out << ")";
 }
@@ -1542,7 +1553,7 @@ bool TGlslOutputTraverser::traverseAggregate( bool preVisit, TIntermAggregate *n
 
    case EOpPow:           writeFuncCall( "pow", node, goit, true); return false;
 
-   case EOpAtan2:         writeFuncCall( "atan", node, goit, true); return false;
+   case EOpAtan2:         writeFuncCall( "atan", node, goit, true, false, true); return false;
 
    case EOpMin:           writeFuncCall( "min", node, goit, true); return false;
    case EOpMax:           writeFuncCall( "max", node, goit, true); return false;
