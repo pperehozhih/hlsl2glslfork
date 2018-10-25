@@ -14,6 +14,7 @@ xcuserdata
 _ReSharper.*
 *.sdf
 *.opensdf
+*.output
 
 CMakeFiles/
 CMakeCache.txt
