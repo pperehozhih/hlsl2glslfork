@@ -117,7 +117,7 @@ if (WIN32)
     include_directories(${CMAKE_CURRENT_SOURCE_DIR}/hlslang/OSDependent/Windows)
     
     add_custom_command(OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/hlslang/MachineIndependent/Gen_hlslang_tab.cpp ${CMAKE_CURRENT_SOURCE_DIR}/hlslang/MachineIndependent/hlslang_tab.h 
-                         COMMAND ./bison.exe ARGS -o hlslang_tab.cpp -d -t -v ${CMAKE_CURRENT_SOURCE_DIR}/hlslang/MachineIndependent/hlslang.y
+                         COMMAND bison.exe ARGS -o hlslang_tab.cpp -d -t -v ${CMAKE_CURRENT_SOURCE_DIR}/hlslang/MachineIndependent/hlslang.y
                          COMMAND move ARGS /y hlslang_tab.hpp ${CMAKE_CURRENT_SOURCE_DIR}/hlslang/MachineIndependent/hlslang_tab.h
                          COMMAND move ARGS /y hlslang_tab.cpp ${CMAKE_CURRENT_SOURCE_DIR}/hlslang/MachineIndependent/hlslang_tab.cpp
                          COMMAND del ARGS hlslang.output
@@ -126,15 +126,15 @@ if (WIN32)
                          COMMENT "Executing Bison on hlslang.y"
                       )
                    
-#    add_custom_command(OUTPUT hlslang/MachineIndependent/Gen_hlslang.cpp
-#                         COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/tools/flex.exe ARGS hlslang.l
-#                         MAIN_DEPENDENCY hlslang/MachineIndependent/hlslang.l
-#                         DEPENDS hlslang/MachineIndependent/hlslang_tab.h
-#                         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/hlslang/MachineIndependent
-#                         COMMENT "Executing flex on hlslang.l"
-#                      )
+   add_custom_command(OUTPUT hlslang/MachineIndependent/Gen_hlslang.cpp
+                        COMMAND flex.exe ARGS hlslang.l
+                        MAIN_DEPENDENCY hlslang/MachineIndependent/hlslang.l
+                        DEPENDS hlslang/MachineIndependent/hlslang_tab.h
+                        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/hlslang/MachineIndependent
+                        COMMENT "Executing flex on hlslang.l"
+                     )
     
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /D\"_HAS_ITERATOR_DEBUGGING=0\" /D\"_SECURE_SCL=0\" /D\"_CRT_SECURE_NO_WARNINGS\"")
+    # SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /D\"_HAS_ITERATOR_DEBUGGING=0\" /D\"_SECURE_SCL=0\" /D\"_CRT_SECURE_NO_WARNINGS\"")
     SET(TEST_LIBS opengl32.lib)
 elseif (APPLE)
     set(OSDEPENDENT_FILES
